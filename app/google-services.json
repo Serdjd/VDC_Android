@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "98144774037",
+    "project_id": "vdc-firebae",
+    "storage_bucket": "vdc-firebae.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:98144774037:android:47c6f9b9f025f03f22789c",
+        "android_client_info": {
+          "package_name": "com.treintaYTres.vdc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgu6Nt1RuTkMosBrlAYflu7AD5uwlcXLI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
