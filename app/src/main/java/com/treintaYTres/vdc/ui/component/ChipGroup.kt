@@ -7,16 +7,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -24,7 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.treintaYTres.vdc.ui.model.Chip
-import com.treintaYTres.vdc.ui.model.people.Instrument
+import com.treintaYTres.vdc.ui.model.Icon
+import com.treintaYTres.vdc.ui.model.InstrumentChip
 import com.treintaYTres.vdc.ui.theme.VdcTheme
 
 /**
@@ -36,7 +38,7 @@ fun FlowFilterChipGroup(
     chips: List<Chip>,
     isFirstSelected: Boolean = false
 ) {
-    var selected by rememberSaveable {
+    var selected by remember {
         mutableStateOf(if (isFirstSelected) chips[0] else "")
     }
     FlowRow(
@@ -77,10 +79,10 @@ fun FlowFilterChipGroupPrev() {
         ) {
             FlowFilterChipGroup(
                 chips = listOf(
-                    Chip("All"){},
-                    Chip("Performances"){},
-                    Chip("Rehearsal"){},
-                    Chip("Rehearsal"){}
+                    Chip("All") {},
+                    Chip("Performances") {},
+                    Chip("Rehearsal") {},
+                    Chip("Rehearsal") {}
                 ),
                 isFirstSelected = true
             )
@@ -138,9 +140,9 @@ fun FilterChipGroupPrev() {
         ) {
             FilterChipGroup(
                 chips = listOf(
-                    Chip("All"){},
-                    Chip("Performances"){},
-                    Chip("Rehearsal"){},
+                    Chip("All") {},
+                    Chip("Performances") {},
+                    Chip("Rehearsal") {},
                 ),
                 alignment = Alignment.Start,
                 isFirstSelected = true
@@ -160,7 +162,7 @@ fun PairedFilterChipGroup(
     isFirstSelected: Boolean = true
 ) {
     val titles = listOf(firstChip, secondChip)
-    var selected by rememberSaveable {
+    var selected by remember {
         mutableStateOf(if (isFirstSelected) titles[0] else "")
     }
     Row(
@@ -200,8 +202,8 @@ fun PairedFilterChipGroupPrev() {
             verticalArrangement = Arrangement.Center
         ) {
             PairedFilterChipGroup(
-                firstChip = Chip("Cuerdas"){},
-                secondChip = Chip("Asistencia"){},
+                firstChip = Chip("Cuerdas") {},
+                secondChip = Chip("Asistencia") {},
                 isFirstSelected = true
             )
         }
@@ -217,18 +219,24 @@ fun ScrollableFilterChipGroup(
     chips: List<Chip>,
     isFirstSelected: Boolean = false
 ) {
-    var selected by rememberSaveable {
+    var selected by remember {
         mutableStateOf(if (isFirstSelected) chips[0] else "")
     }
     LazyRow(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(
+            16.dp,
+            Alignment.CenterHorizontally
+        )
     ) {
         items(chips) {
+            val icon = it.icon?.let {
+                Icon.DrawableIcon(it)
+            }
             FilterChip(
                 title = it.title,
+                icon = icon,
                 selected = selected == it
             ) {
                 if (selected != it) {
@@ -253,10 +261,10 @@ fun ScrollableFilterChipGroupPrev() {
         ) {
             ScrollableFilterChipGroup(
                 chips = listOf(
-                    Chip("All"){},
-                    Chip("Performances"){},
-                    Chip("Rehearsal"){},
-                    Chip("Rehearsal"){}
+                    Chip("All") {},
+                    Chip("Performances") {},
+                    Chip("Rehearsal") {},
+                    Chip("Rehearsal") {}
                 ),
                 isFirstSelected = true
             )
@@ -267,17 +275,58 @@ fun ScrollableFilterChipGroupPrev() {
 
 @Composable
 fun InstrumentChips(
-    chips: List<Chip>,
+    chips: List<InstrumentChip>,
     onClick: () -> Unit
 ) {
-    FlowRow {
-        FlowFilterChipGroup(chips)
-        OutlinedIconButton (onClick = onClick) {
+    FlowRow(
+        verticalArrangement = Arrangement.spacedBy(
+            space = 6.dp
+        ),
+        horizontalArrangement = Arrangement.spacedBy(
+            space = 16.dp
+        )
+    ) {
+        if (chips.isNotEmpty()) {
+            chips.forEach {
+                FilterChip(
+                    title = it.title,
+                    url = it.icon,
+                    selected = chips[0].title == it.title
+                ) {}
+            }
+        }
+        FilledIconButton(
+            onClick = onClick,
+            modifier = Modifier
+                .size(32.dp)
+                .align(Alignment.CenterVertically)
+        ) {
             Icon(
                 imageVector = Icons.Rounded.Edit,
                 contentDescription = "Edit Instruments"
             )
         }
     }
+}
 
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun InstrumentChipsPrev() {
+    VdcTheme {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            InstrumentChips(
+                chips = listOf()
+            ) {
+
+            }
+        }
+
+    }
 }

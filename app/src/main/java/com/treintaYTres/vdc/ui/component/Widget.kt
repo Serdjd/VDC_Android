@@ -14,6 +14,7 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
@@ -30,53 +31,61 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.treintaYTres.vdc.R
 import com.treintaYTres.vdc.ui.model.Action
 import com.treintaYTres.vdc.ui.model.Icon
 import com.treintaYTres.vdc.ui.model.Icon.DrawableIcon
 import com.treintaYTres.vdc.ui.model.Icon.VectorIcon
 import com.treintaYTres.vdc.ui.model.people.Instrument
 import com.treintaYTres.vdc.ui.theme.VdcTheme
+import com.treintaYTres.vdc.ui.theme.textThin
 
 @Composable
-fun PendingConfirm() {
+fun PendingConfirm(
+    onClick: (Boolean) -> Unit
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        CheckButton {
-
-        }
-        CrossButton {
-
-        }
+        CheckButton {onClick(true)}
+        CrossButton {onClick(false)}
     }
 }
 
 @Composable
-fun PositiveConfirmation() {
+fun PositiveConfirmation(
+    onClick: (Boolean) -> Unit
+) {
     AssistChip(
         title = "Iré",
         icon = Icons.Rounded.Check,
         chipColors = SuggestionChipDefaults.suggestionChipColors(
-            disabledLabelColor = Color.Green,
-            disabledContainerColor = Color.Transparent,
-            disabledIconContentColor = Color.Green
+            labelColor = Color.Green,
+            containerColor = Color.Transparent,
+            iconContentColor = Color.Green
         ),
         borderStroke = BorderStroke(2.dp, Color.Green)
-    ) {}
+    ) {
+        onClick(true)
+    }
 }
 
 @Composable
-fun NegativeConfirmation() {
+fun NegativeConfirmation(
+    onClick: (Boolean) -> Unit
+) {
     AssistChip(
         title = "No Iré",
         icon = Icons.Rounded.Close,
         chipColors = SuggestionChipDefaults.suggestionChipColors(
-            disabledLabelColor = Color.Red,
-            disabledContainerColor = Color.Transparent,
-            disabledIconContentColor = Color.Red
+            labelColor = Color.Red,
+            containerColor = Color.Transparent,
+            iconContentColor = Color.Red
         ),
         borderStroke = BorderStroke(2.dp, Color.Red)
-    ) {}
+    ) {
+        onClick(false)
+    }
 }
 
 @Preview(
@@ -94,8 +103,12 @@ fun ConfirmationChipPrev() {
                 alignment = Alignment.CenterHorizontally
             )
         ) {
-            PositiveConfirmation()
-            NegativeConfirmation()
+            PositiveConfirmation {
+
+            }
+            NegativeConfirmation {
+
+            }
         }
 
     }
@@ -112,11 +125,13 @@ fun AssistanceAmount(
 
         Text(text = "$confirmedAssistance", style = MaterialTheme.typography.bodyLarge)
         CheckButton(
-            modifier = Modifier.clickable(false) {}
+            modifier = Modifier.clickable(false) {},
+            size = 32
         ) {}
         Text(text = "$cancellationAssistance", style = MaterialTheme.typography.bodyLarge)
         CrossButton(
-            modifier = Modifier.clickable(false) {}
+            modifier = Modifier.clickable(false) {},
+            size = 32
         ) {}
     }
 
@@ -173,6 +188,38 @@ fun UserInfo(
     }
 }
 
+@Composable
+fun UserInfoSheet(
+    name: String,
+    instrument: Instrument?
+) {
+    if (instrument == null) return
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(1.dp)
+    ) {
+        Text(text = name, style = MaterialTheme.typography.titleLarge)
+        Row(
+            modifier = Modifier.padding(horizontal = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(instrument.url)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Inside,
+                modifier = Modifier
+                    .size(32.dp)
+            )
+            Text(text = instrument.name, style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+}
+
+
 @Preview(
     showBackground = true,
     showSystemUi = true
@@ -208,7 +255,7 @@ fun SimpleItem(
     gap: Int = 16,
     iconSize: Int = 24,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
-    color: Color = Color.Unspecified
+    color: Color = LocalContentColor.current
 ) {
     Row(
         modifier = modifier,
@@ -228,7 +275,8 @@ fun SimpleItem(
                 Icon(
                     painter = painterResource(icon.resource),
                     contentDescription = icon.contentDescription,
-                    modifier = Modifier.size(iconSize.dp)
+                    modifier = Modifier.size(iconSize.dp),
+                    tint = color
                 )
             }
         }
@@ -255,7 +303,7 @@ fun SimpleItemPrev() {
                 alignment = Alignment.CenterHorizontally
             )
         ) {
-            SimpleItem(VectorIcon(Icons.Rounded.Lock), "Aún no has pasado lista")
+            SimpleItem(DrawableIcon(R.drawable.banda_avatar), "Aún no has pasado lista", color = Color.Unspecified)
         }
     }
 }
@@ -269,7 +317,7 @@ fun SimpleItemClickable(
     gap: Int = 16,
     iconSize: Int = 24,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
-    color: Color = Color.Unspecified,
+    color: Color = LocalContentColor.current,
 ) {
     Row(
         modifier = modifier.clickable {
@@ -287,7 +335,8 @@ fun SimpleItemClickable(
                     Icon(
                         imageVector = icon.resource,
                         contentDescription = icon.contentDescription,
-                        modifier = Modifier.size(iconSize.dp)
+                        modifier = Modifier.size(iconSize.dp),
+                        tint = color
                     )
                 }
 
@@ -295,7 +344,8 @@ fun SimpleItemClickable(
                     Icon(
                         painter = painterResource(icon.resource),
                         contentDescription = icon.contentDescription,
-                        modifier = Modifier.size(iconSize.dp)
+                        modifier = Modifier.size(iconSize.dp),
+                        tint = color
                     )
                 }
             }
@@ -364,5 +414,17 @@ fun HeaderItem(
         gap = 8,
         textStyle = MaterialTheme.typography.titleLarge,
         color = MaterialTheme.colorScheme.onSurface
+    )
+}
+@Composable
+fun EventFinished() {
+    Icon(
+        painter = painterResource(R.drawable.hourglass),
+        contentDescription = null
+    )
+    Text(
+        text = "Event finished",
+        style = MaterialTheme.typography.titleMedium,
+        color = textThin
     )
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.treintaYTres.vdc.ui.model.Icon.VectorIcon
 import com.treintaYTres.vdc.ui.model.people.StringAttendance
 import com.treintaYTres.vdc.ui.theme.VdcTheme
+import com.treintaYTres.vdc.ui.util.Constant
 
 @Composable
 fun StringHeader(
@@ -30,8 +31,7 @@ fun StringHeader(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -40,8 +40,8 @@ fun StringHeader(
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(stringAttendance.instrumentUrl, Modifier.size(32.dp))
-                Text(text = stringAttendance.stringName, style = MaterialTheme.typography.titleLarge)
+                Image(stringAttendance.instrumentUrl, Modifier.size(24.dp))
+                Text(text = stringAttendance.stringName, style = MaterialTheme.typography.titleMedium)
             }
             AssistanceAmount(stringAttendance.confirmed, stringAttendance.cancelled)
         }
@@ -72,12 +72,13 @@ fun AssistanceHeader(
     var icon = VectorIcon(Icons.Outlined.Notifications, "State")
     var text = "Pendientes"
     when (state) {
-        0 -> {
+
+        Constant.Event.POSITIVE_CONFIRMATION -> {
             icon.resource = Icons.Rounded.Check
             text = "Irá"
         }
 
-        1 -> {
+        Constant.Event.NEGATIVE_CONFIRMATION  -> {
             icon.resource = Icons.Rounded.Close
             text = "No Irá"
         }
@@ -92,8 +93,8 @@ fun AssistanceHeader(
                 .fillMaxWidth()
                 .padding(4.dp),
             gap = 16,
-            iconSize = 48,
-            textStyle = MaterialTheme.typography.titleLarge,
+            iconSize = 24,
+            textStyle = MaterialTheme.typography.titleMedium,
         )
     }
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.treintaYTres.vdc.R
+import com.treintaYTres.vdc.ui.model.auth.Validation
 import com.treintaYTres.vdc.ui.theme.VdcTheme
 import com.treintaYTres.vdc.viewmodel.SignInViewModel
 import kotlinx.coroutines.async
@@ -32,7 +33,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(
     signInViewModel: SignInViewModel,
-    navigate: (Boolean) -> Unit
+    navigate: (Validation) -> Unit
 ) {
 
     LaunchedEffect(true) {

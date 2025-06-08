@@ -6,8 +6,10 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -18,23 +20,23 @@ import com.treintaYTres.vdc.ui.theme.VdcTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabRow(
-    tabs: List<Tab>
+    tabs: List<Tab>,
+    selected: MutableIntState
 ) {
-    var selected by rememberSaveable { mutableIntStateOf(0) }
     SecondaryTabRow(
-        selectedTabIndex = selected,
+        selectedTabIndex = selected.intValue,
         indicator = {
             TabRowDefaults.SecondaryIndicator(
-                Modifier.tabIndicatorOffset(selected,true)
+                Modifier.tabIndicatorOffset(selected.intValue,true)
             )
         }
     ) {
         tabs.forEachIndexed { index, tab ->
             Tab(
-                selected = index == selected,
+                selected = index == selected.intValue,
                 onClick = {
-                    if (index != selected) {
-                        selected = index
+                    if (index != selected.intValue) {
+                        selected.intValue = index
                         tab.onClick()
                     }
                 },
@@ -49,9 +51,12 @@ fun TabRow(
 fun TabRowPrev(
 ) {
     VdcTheme {
-        TabRow(listOf(
-            Tab("Details") {},
-            Tab("Members") {}
-        ))
+        TabRow(
+            listOf(
+                Tab("Details") {},
+                Tab("Members") {}
+            ),
+            remember { mutableIntStateOf(0) }
+        )
     }
 }

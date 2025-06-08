@@ -31,9 +31,11 @@ import com.treintaYTres.vdc.ui.theme.VdcTheme
 fun Profile(
     url: String,
     size: Int,
-    isAdministrator: Boolean = false
+    modifier: Modifier = Modifier,
+    isAdministrator: Boolean = false,
 ) {
     Box(
+        modifier = modifier,
         contentAlignment = Alignment.BottomEnd
     ) {
         AsyncImage(
@@ -42,10 +44,54 @@ fun Profile(
                 .crossfade(true)
                 .build(),
             contentDescription = null,
-            contentScale = ContentScale.Inside,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .clip(CircleShape)
                 .size(size.dp)
+        )
+        if (isAdministrator) {
+            Icon(
+                painter = painterResource(R.drawable.rounded_star),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.inversePrimary,
+            )
+        }
+    }
+}
+
+@Composable
+fun ProfileUri(
+    uri: Any?,
+    size: Int,
+    modifier: Modifier = Modifier,
+) {
+    AsyncImage(
+        model = uri,
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        error = painterResource(R.drawable.account_filled),
+        modifier = modifier
+            .clip(CircleShape)
+            .size(size.dp)
+    )
+}
+
+@Composable
+fun Profile(
+    icon: Int,
+    size: Int,
+    modifier: Modifier = Modifier,
+    isAdministrator: Boolean = false,
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.BottomEnd
+    ) {
+        Icon(
+            modifier = Modifier.size(size.dp),
+            painter = painterResource(icon),
+            contentDescription = null,
+            tint = Color.Unspecified
         )
         if (isAdministrator) {
             Icon(
@@ -55,7 +101,6 @@ fun Profile(
             )
         }
     }
-
 }
 
 
@@ -68,7 +113,7 @@ fun ProfilePrev() {
     }
     VdcTheme {
         CompositionLocalProvider(LocalAsyncImagePreviewHandler provides provider) {
-            Profile("", 64, true)
+            Profile("", 64, isAdministrator = true)
         }
     }
 }

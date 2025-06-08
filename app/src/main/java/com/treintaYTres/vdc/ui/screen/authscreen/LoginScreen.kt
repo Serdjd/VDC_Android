@@ -35,6 +35,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import com.treintaYTres.vdc.network.Result
 import com.treintaYTres.vdc.ui.component.OutlinedTextField
 import com.treintaYTres.vdc.ui.component.TextTitle
+import com.treintaYTres.vdc.ui.model.auth.Validation
 import com.treintaYTres.vdc.ui.theme.VdcTheme
 import com.treintaYTres.vdc.viewmodel.SignInViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -44,7 +45,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     viewModel: SignInViewModel,
-    navigateToHomeScreen: () -> Unit,
+    navigateToHomeScreen: (Validation) -> Unit,
     navigateToSignUpScreen: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -55,13 +56,15 @@ fun LoginScreen(
     var btnEnable by remember { mutableStateOf(true) }
     var isLoading by remember { mutableStateOf(false) }
 
+    val validation = viewModel.validation.collectAsState()
+
     LaunchedEffect(scope) {
         viewModel.signInResult.onEach {
             when(it) {
                 is Result.Success<*> -> {
                     btnEnable = true
                     isLoading = false
-                    navigateToHomeScreen()
+                    navigateToHomeScreen(validation.value)
                 }
                 is Result.Loading<*> -> {
                     isLoading = true

@@ -1,6 +1,8 @@
 package com.treintaYTres.vdc.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -20,13 +22,14 @@ fun Image(
     url: String,
     modifier: Modifier
 ) {
+    val context = LocalContext.current
     AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
+        model = ImageRequest.Builder(context)
             .data(url)
             .crossfade(true)
             .build(),
         contentDescription = null,
-        contentScale = ContentScale.Inside,
+        contentScale = ContentScale.Crop,
         modifier = modifier
     )
 }
@@ -37,18 +40,19 @@ fun InstrumentOutlined(
     size: Int,
     isPrimary: Boolean = false
 ) {
+    val context = LocalContext.current
     Surface(
         shape = CircleShape,
         color = Color.Transparent,
         border = BorderStroke(1.dp, if (isPrimary) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline)
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
+            model = ImageRequest.Builder(context)
                 .data(url)
                 .crossfade(true)
-                .build(),
+                .build() ,
             contentDescription = null,
-            contentScale = ContentScale.Inside,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(size.dp)
         )
