@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,7 +25,7 @@ import com.treintaYTres.vdc.ui.theme.VdcTheme
 
 @Composable
 fun InstrumentIcon(
-    model: ImageRequest,
+    model: String,
     isPrimary: Boolean
 ) {
     Box(
@@ -38,7 +39,10 @@ fun InstrumentIcon(
         ) {
             IconButton(onClick = {}) {
                 Icon(
-                    painter = rememberAsyncImagePainter(model = model),
+                    painter = rememberAsyncImagePainter(
+                        model = model,
+                        contentScale = ContentScale.Crop
+                    ),
                     contentDescription = "Instrument"
                 )
             }
@@ -59,7 +63,7 @@ fun InstrumentIcon(
 fun InstrumentIconPrev() {
     VdcTheme {
         InstrumentIcon(
-            ImageRequest.Builder(LocalContext.current).build(),
+            "",
             true
         )
     }

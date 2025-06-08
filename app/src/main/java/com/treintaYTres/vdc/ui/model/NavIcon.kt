@@ -16,7 +16,7 @@ sealed class NavIcon(
     ) : NavIcon(description,route)
 
     data class Url(
-        val selected: String,
+        var selected: String,
         override val description: String,
         override val route: String
     ) : NavIcon(description,route)

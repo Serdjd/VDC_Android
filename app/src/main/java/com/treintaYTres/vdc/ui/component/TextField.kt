@@ -15,22 +15,40 @@ fun OutlinedTextField(
     modifier: Modifier,
     state: String,
     placeholder: String,
-    icon: ImageVector,
+    icon: ImageVector? = null,
+    enabled: Boolean = true,
+    singleLine: Boolean = true,
+    readOnly: Boolean = false,
     onValueChange: (String) -> Unit
 ) {
-    OutlinedTextField(
-        modifier = modifier.padding(),
-        value = state,
-        label = { Text(placeholder) },
-        onValueChange = { onValueChange.invoke(it) },
-        leadingIcon = {
-            Icon(
-                imageVector = icon,
-                contentDescription = "Trailing Icon"
-            )
-        },
-        singleLine = true
-    )
+    if (icon != null) {
+        OutlinedTextField(
+            modifier = modifier.padding(),
+            value = state,
+            label = { Text(placeholder) },
+            onValueChange = { onValueChange.invoke(it) },
+            leadingIcon = {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "Trailing Icon"
+                )
+            },
+            singleLine = singleLine,
+            enabled = enabled,
+            readOnly = readOnly
+        )
+    } else {
+        OutlinedTextField(
+            modifier = modifier.padding(),
+            value = state,
+            label = { Text(placeholder) },
+            onValueChange = { onValueChange.invoke(it) },
+            singleLine = singleLine,
+            enabled = enabled,
+            readOnly = readOnly
+        )
+    }
+
 }
 
 @Composable
@@ -39,6 +57,7 @@ fun OutlinedTextField(
     state: State<String>,
     placeholder: String,
     icon: Painter,
+    readOnly: Boolean = false,
     onValueChange: (String) -> Unit
 ) {
     OutlinedTextField(
@@ -52,6 +71,7 @@ fun OutlinedTextField(
                 contentDescription = "Trailing Icon"
             )
         },
-        singleLine = true
+        singleLine = true,
+        readOnly = readOnly
     )
 }

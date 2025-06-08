@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignUpScreen(
     viewModel: SignUpViewModel,
-    navigateToHomeScreen: () -> Unit,
+    navigateToWaitingScreen: () -> Unit,
     navigateToLoginScreen: () -> Unit
 ) {
 
@@ -50,22 +50,20 @@ fun SignUpScreen(
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var btnEnable by remember { mutableStateOf(true) }
+    var isFormEnable by remember { mutableStateOf(true) }
     var isLoading by remember { mutableStateOf(false) }
 
     LaunchedEffect(scope) {
         viewModel.signUpResult.onEach {
             when(it) {
                 is Result.Success<*> -> {
-                    btnEnable = true
-                    isLoading = false
-                    navigateToHomeScreen()
+                    viewModel.createUser(email)
                 }
                 is Result.Loading<*> -> {
                     isLoading = true
                 }
                 is Result.Error<*> -> {
-                    btnEnable = true
+                    isFormEnable = true
                     isLoading = false
                     scope.launch {
                         snackbarHostState.showSnackbar(
@@ -73,6 +71,23 @@ fun SignUpScreen(
                             duration = SnackbarDuration.Short
                         )
                     }
+                }
+            }
+        }.launchIn(this)
+
+        viewModel.userCreated.onEach {
+            if (it) {
+                isFormEnable = true
+                isLoading = false
+                navigateToWaitingScreen()
+            } else {
+                isFormEnable = true
+                isLoading = false
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        "Error occurred, tried it later",
+                        duration = SnackbarDuration.Short
+                    )
                 }
             }
         }.launchIn(this)
@@ -106,7 +121,8 @@ fun SignUpScreen(
                         modifier = Modifier.fillMaxWidth(),
                         state = email,
                         placeholder = "Email",
-                        icon = Icons.Rounded.Email
+                        icon = Icons.Rounded.Email,
+                        enabled = isFormEnable
                     ) {
                         email = it
                     }
@@ -114,7 +130,8 @@ fun SignUpScreen(
                         modifier = Modifier.fillMaxWidth(),
                         state = password,
                         placeholder = "Password",
-                        icon = Icons.Rounded.Lock
+                        icon = Icons.Rounded.Lock,
+                        enabled = isFormEnable
                     ) {
                         password = it
                     }
@@ -129,9 +146,9 @@ fun SignUpScreen(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
                                 viewModel.signUp(email, password)
-                                btnEnable = false
+                                isFormEnable = false
                             },
-                            enabled = btnEnable
+                            enabled = isFormEnable
                         ) {
                             if (!isLoading) {
                                 Text("Create Account")

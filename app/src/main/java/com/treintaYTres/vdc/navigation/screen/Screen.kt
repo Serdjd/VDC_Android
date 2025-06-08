@@ -11,8 +11,11 @@ sealed class Screen(val route: String) {
         object Profile: Screen("profile_screen")
         object NewEvent: Screen("new_event_screen")
         object RollCall: Screen("roll_call_screen")
-        object Rehearsal: Screen("rehearsal_screen")
         object SelectInstrument: Screen("select_instrument_screen")
+        object EventDetails: Screen("event_details_screen_route")
+        object CompleteRegistry: Screen("complete_registry_screen")
+        object Waiting: Screen("waiting_screen")
+        object Main: Screen("main_screen")
     }
 
     sealed interface EventDetails {

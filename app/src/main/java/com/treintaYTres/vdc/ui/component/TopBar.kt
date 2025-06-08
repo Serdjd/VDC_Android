@@ -26,7 +26,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -58,7 +60,7 @@ fun TopBar(
             if (navIcon != null) {
                 IconButton(onClick = navIcon.navigate) {
                     Icon(
-                        painter = rememberAsyncImagePainter(model = navIcon.image),
+                        imageVector = navIcon.image,
                         contentDescription = "Navigation Icon"
                     )
                 }
@@ -71,10 +73,16 @@ fun TopBar(
                     when (it) {
                         is Action.Icon -> {
                             IconButton(onClick = it.action) {
-                                Icon(
-                                    painter = rememberAsyncImagePainter(model = it.icon),
-                                    contentDescription = null
-                                )
+                                when(it.icon) {
+                                    is ImageVector -> Icon(
+                                        imageVector = it.icon as ImageVector,
+                                        contentDescription = null
+                                    )
+                                    else -> Icon(
+                                        painter = rememberAsyncImagePainter(model = it.icon),
+                                        contentDescription = null
+                                    )
+                                }
                             }
                         }
 
@@ -142,10 +150,12 @@ fun MediumTopBar(
         title = { Text(title) },
         navigationIcon = {
             if (navIcon != null) {
-                Icon(
-                    imageVector = navIcon.image,
-                    contentDescription = "Navigation Icon"
-                )
+                IconButton(onClick = navIcon.navigate) {
+                    Icon(
+                        imageVector = navIcon.image,
+                        contentDescription = "Navigation Icon"
+                    )
+                }
             }
         },
         actions = {
@@ -191,13 +201,14 @@ fun MediumTopBarPrev() {
 fun TabTopBar(
     title: String,
     tabs: List<Tab>,
+    selected: MutableIntState,
     navIcon: NavIcon.Back? = null,
     actions: List<Action>? = null,
     insets: WindowInsets = TopAppBarDefaults.windowInsets
 ) {
     Column {
         TopBar(title, navIcon, actions, insets)
-        TabRow(tabs)
+        TabRow(tabs,selected)
     }
 }
 
@@ -214,7 +225,8 @@ fun TabTopBarPrev() {
             listOf(
                 Tab("Details") {},
                 Tab("Members") {}
-            )
+            ),
+            remember { mutableIntStateOf(0) }
         )
     }
 }
@@ -315,15 +327,15 @@ fun OutlinedTextFieldTopBar(
             icon = trailingIcon,
             onValueChange = onValueChange
         )
-        LazyRow {
-            itemsIndexed(instruments) { index, instrument ->
-                InstrumentOutlined(
-                    url = instrument.url,
-                    size = 48,
-                    isPrimary = index == 0
-                )
-            }
-        }
+//        LazyRow {
+//            itemsIndexed(instruments) { index, instrument ->
+//                InstrumentOutlined(
+//                    url = instrument.url,
+//                    size = 48,
+//                    isPrimary = index == 0
+//                )
+//            }
+//        }
     }
 }
 

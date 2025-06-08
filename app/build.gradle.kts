@@ -5,6 +5,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -19,6 +20,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "API_BASE_URL", "\"https://vdc.sergi.tech/pre/\"")
+        buildConfigField("String", "API_PROFILE_URL", "\"https://vdc.sergi.tech/pre/images/users/\"")
+        buildConfigField("String", "API_INSTRUMENT_URL", "\"https://vdc.sergi.tech/pre/images/instruments/\"")
+        buildConfigField("String", "API_STRING_URL", "\"https://vdc.sergi.tech/pre/images/strings/\"")
     }
 
     buildTypes {
@@ -39,6 +44,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -68,6 +74,7 @@ dependencies {
 
     // Coil
     implementation(libs.coil.compose)
+    implementation(libs.coil.network)
 
     // Retrofit
     implementation(libs.retrofit)
@@ -77,6 +84,9 @@ dependencies {
 
     // JSON Converter
     implementation(libs.converter.gson)
+
+    //Plain Text Converter
+    implementation(libs.converter.scalars)
 
     //Room
     implementation(libs.androidx.room.runtime)
@@ -90,6 +100,12 @@ dependencies {
     //Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+
+    //Natural time
+    implementation(libs.prettytime)
+
+    //Navigation
+    implementation (libs.androidx.navigation.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
