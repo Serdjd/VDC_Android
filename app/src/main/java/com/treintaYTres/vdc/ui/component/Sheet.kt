@@ -9,22 +9,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.treintaYTres.vdc.ui.model.people.Person
+import com.treintaYTres.vdc.ui.model.event.Member
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Sheet(
-    texts: List<String>,
-    actions: List<(() -> Unit)>,
-    member: Person,
+    data: Map<() -> Unit, String>,
+    member: Member,
     onDismiss: () -> Unit,
     sheetState: SheetState
 ) {
@@ -37,28 +38,33 @@ fun Sheet(
                 .fillMaxWidth()
                 .height(400.dp),
             verticalArrangement = Arrangement.spacedBy(
-                90.dp,
+                45.dp,
                 Alignment.CenterVertically
             ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            MemberItem(member = member)
+            SheetMemberItem(member = member)
 
-            Column {
-                texts.forEachIndexed { index, text ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                data.entries.forEachIndexed { index, entry ->
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(40.dp)
+                            .height(50.dp)
                             .clickable {
-                                actions[index].invoke()
+                                entry.key.invoke()
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        TextHeader(text)
-                        if (index < texts.lastIndex)
+                        Text(
+                            text = entry.value,
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                        if (index < data.entries.size - 1)
                             HorizontalDivider(
                                 modifier = Modifier
+                                    .fillMaxWidth(.6f)
                                     .padding(horizontal = 8.dp)
                                     .align(Alignment.BottomCenter)
                             )
@@ -73,19 +79,24 @@ fun Sheet(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModalSheet(
-    member: Person,
+    userId: Int,
+    member: Member,
     actions: List<(() -> Unit)>,
     sheetState: SheetState,
     onDismiss: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    val list = mutableMapOf<() -> Unit, String>(
+        actions[1] to "Editar Instrumentos"
+    )
+    if (member.id != userId) {
+        if (member.isAdmin.value) list.put(actions[0], "Cesar Administrador")
+        list.put(actions[2], "Eliminar Miembro")
+    }
+
+
     Sheet(
-        texts = listOf(
-            "Cesar Administrador",
-            "Editar Instrumentos",
-            "Eliminar Miembro"
-        ),
-        actions = actions,
+        data = list,
         member = member,
         onDismiss = {
             scope.launch {

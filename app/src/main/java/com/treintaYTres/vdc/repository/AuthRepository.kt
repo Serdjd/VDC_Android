@@ -6,4 +6,7 @@ interface AuthRepository {
     fun isSigned(): Boolean
     suspend fun signIn(email: String, password: String): Result<String>
     suspend fun signUp(email: String, password: String): Result<String>
+    suspend fun checkValidation(): Boolean
+    suspend fun checkRegistryCompleted(): Boolean
+    suspend fun deleteMember(id: Int): Boolean
 }

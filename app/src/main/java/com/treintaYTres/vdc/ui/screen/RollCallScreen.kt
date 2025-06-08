@@ -7,20 +7,37 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import com.treintaYTres.vdc.network.Result
 import com.treintaYTres.vdc.ui.component.RollCallItem
 import com.treintaYTres.vdc.ui.component.TopBar
+import com.treintaYTres.vdc.ui.mapper.toRollCallRequest
 import com.treintaYTres.vdc.ui.model.Action
 import com.treintaYTres.vdc.ui.model.NavIcon
-import com.treintaYTres.vdc.ui.model.people.Person
+import com.treintaYTres.vdc.viewmodel.rollcall.RollCallViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun RollCallScreen(
-    members: List<Person>,
+    viewModel: RollCallViewModel,
     navigateBack: () -> Unit
 ) {
-    val assistance = remember { mutableMapOf<Int, Boolean>() }
+    val data = viewModel.data.collectAsState()
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(scope) {
+        viewModel.result.collectLatest {
+            when(it) {
+                is Result.Success<*> -> {
+                    navigateBack()
+                }
+                else -> {}
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopBar(
@@ -28,20 +45,24 @@ fun RollCallScreen(
                 navIcon = NavIcon.Back(Icons.AutoMirrored.Rounded.ArrowBack,navigateBack),
                 actions = listOf(
                     Action.Text("Guardar") {
-                        navigateBack()
+                        viewModel.updateData((data.value as Result.Success).data.toRollCallRequest())
                     }
                 )
             )
         }
     ) {
-        LazyColumn(
-            modifier = Modifier.padding(it)
-        ) {
-            items(members) {person ->
-                RollCallItem(person) {
-                    assistance.put(person.id,it)
+        when(data.value) {
+            is Result.Success<*> -> with((data.value as Result.Success).data) {
+                LazyColumn(
+                    modifier = Modifier.padding(it)
+                ) {
+                    items(this@with) {item ->
+                        RollCallItem(item)
+                    }
                 }
             }
+            else -> {}
         }
+
     }
 }

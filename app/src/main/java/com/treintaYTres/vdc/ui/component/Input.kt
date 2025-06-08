@@ -16,6 +16,7 @@ import androidx.compose.material3.TimePickerDialog
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -36,9 +37,16 @@ import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateInput() {
+fun DateInput(
+    onValueChange: (String) -> Unit
+) {
     var showModal by remember { mutableStateOf(false) }
     var date by remember { mutableStateOf(getTodayFormatted()) }
+
+    LaunchedEffect(date) {
+        onValueChange(date)
+    }
+
     OutlinedTextField(
         modifier = Modifier
             .wrapContentWidth()
@@ -54,6 +62,7 @@ fun DateInput() {
         state = date,
         placeholder = "Día",
         icon = Icons.Rounded.DateRange,
+        readOnly = true,
         onValueChange = {}
     )
 
@@ -105,7 +114,9 @@ fun DateModal(
 @Composable
 fun DateInputPrev() {
     VdcTheme {
-        DateInput()
+        DateInput() {
+
+        }
     }
 }
 
@@ -123,6 +134,9 @@ fun TimeInput(
             "${hour.intValue.formatTime()}:${minute.intValue.formatTime()}"
         }
     }
+    LaunchedEffect(hourState.value) {
+        onValueChange(hourState.value)
+    }
 
     OutlinedTextField(
         modifier = Modifier
@@ -139,6 +153,7 @@ fun TimeInput(
         state = hourState,
         placeholder = "Hora",
         icon = painterResource(R.drawable.schedule),
+        readOnly = true,
         onValueChange = {}
     )
 
@@ -148,7 +163,6 @@ fun TimeInput(
                 it.let {
                     hour.intValue = it.first
                     minute.intValue = it.second
-                    onValueChange(hourState.value)
                 }
             },
             onDismiss = {

@@ -13,11 +13,12 @@ import com.treintaYTres.vdc.R
 @Composable
 fun CheckButton(
     modifier: Modifier = Modifier,
+    size: Int = 48,
     onclick: () -> Unit
 ) {
     IconButton(onClick = onclick) {
         Icon(
-            modifier = modifier.size(48.dp),
+            modifier = modifier.size(size.dp),
             painter = painterResource(R.drawable.check),
             contentDescription = "Go Icon",
             tint = MaterialTheme.colorScheme.primary
@@ -28,11 +29,12 @@ fun CheckButton(
 @Composable
 fun CrossButton(
     modifier: Modifier = Modifier,
+    size: Int = 48,
     onclick: () -> Unit
 ) {
     IconButton(onClick = onclick) {
         Icon(
-            modifier = modifier.size(48.dp),
+            modifier = modifier.size(size.dp),
             painter = painterResource(R.drawable.cancel),
             contentDescription = "Don't Go Icon",
             tint = MaterialTheme.colorScheme.primary
